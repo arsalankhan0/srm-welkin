@@ -1,0 +1,12 @@
+.img-container {
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    height: 50vh;
+    background: url(/images/srm.jpg);
+}
+
+.img-overlay {
+    background: #32373d8f;
+    height: 100%;
+}

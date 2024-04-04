@@ -1,0 +1,46 @@
+.noticeBoard {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow-y: auto; 
+    max-height: 400px; 
+}
+
+.noticeBoardTitle {
+    text-align: center;
+    font-size: 24px;
+    margin: 20px 0;
+}
+
+.noticeList {
+    list-style-type: none;
+    padding: 0;
+}
+
+.notice {
+    background-color: #fff;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.noticeContent {
+    padding: 20px;
+}
+
+.noticeTitle {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.noticeText {
+    margin-bottom: 10px;
+}
+
+.noticeDate {
+    font-style: italic;
+    color: #666;
+}
