@@ -132,7 +132,7 @@ export default async function Home() {
       <VideoSection />
       <VideoModal />
       <AllTeamMemberSection 
-            title='Staff Members Of The Week'
+            title='Staff Leader board'
             teamData={staff} />
       {students && <WorkSection workData={students}/>}
       <FooterSection />

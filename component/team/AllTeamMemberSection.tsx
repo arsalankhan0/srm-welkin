@@ -18,9 +18,6 @@ const AllTeamMemberSection = ({teamData, title} : Props) => {
 
   const handleTeamPageChange = (newPage : number) => {
     setCurrentTeamPage(newPage);
-    // setTimeout(() => {
-    //   window.scrollTo(0, 200);
-    // }, 500);
   };
   return (
     <section className="tf__team_page mt-5 xs_mt_95">
