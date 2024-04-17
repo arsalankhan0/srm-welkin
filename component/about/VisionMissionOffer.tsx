@@ -108,7 +108,7 @@ const MissionVisionOffer = () => {
                     <div className="offer-card d-flex align-items-center justify-content-center">
                       <div className="d-flex flex-column align-items-center">
                         <img
-                          src="/images/offering/professionalGrowth.png"
+                          src="/images/professionalGrowth.png"
                           alt="img"
                           className="mb-3"
                         />
