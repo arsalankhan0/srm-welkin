@@ -13,7 +13,6 @@ const ContactForm = () => {
     if (!name || !email || !message) {
       toast.error("Please fill out all fields.", { position: "top-right" });
     }  else {
-      // If the form is successfully submitted, show a success toast
       toast.success("Form submitted successfully!", {
         position: "top-right",
       });

@@ -28,8 +28,8 @@ CSS INDEX
 /*==================================
     GLOBAL CSS START
 ==================================*/
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700;800;900&amp;family=Rubik:wght@300;400;500;600;700;800;900&amp;display=swap");
-
+/* @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700;800;900&amp;family=Rubik:wght@300;400;500;600;700;800;900&amp;display=swap"); */
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
 * {
   margin: 0;
   padding: 0;
@@ -116,15 +116,19 @@ button {
 }
 
 :root {
-  --colorPrimary: #ff7f46;
+  /* --colorPrimary: #ff7f46; */
+  --colorPrimary: #004AAD;
+  --colorSecondary: #FFBD59;
   --colorBlue: #4582ff;
   --colorGreen: #00d6d3;
   --colorBlack: #0f2239;
   --paraColor: #636363;
   --ratingColor: #f1cc38;
   --colorWhite: #ffffff;
+  /* --paraFont: "Rubik", sans-serif;
+  --headingFont: "Montserrat", sans-serif; */
   --paraFont: "Rubik", sans-serif;
-  --headingFont: "Montserrat", sans-serif;
+  --headingFont: "Rubik", sans-serif;
   --box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }
 
@@ -167,7 +171,8 @@ button {
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 #faa392;
+    /* box-shadow: 0 0 0 0 #faa392; */
+    box-shadow: 0 0 0 0 var(--colorBlue);
   }
 }
 
@@ -512,6 +517,12 @@ button {
   background: var(--colorWhite);
   box-shadow: var(--box-shadow);
 }
+.top-nav
+{
+  position: fixed !important;
+  top: 0;
+  background: var(--colorWhite);
+}
 
 .menu_fix .navbar-brand {
   max-width: 240px;
@@ -626,11 +637,17 @@ button {
 .tf__banner {
   position: relative;
   height: 100vh;
+  margin-top: 6rem;
   background-position: center !important;
   background-repeat: no-repeat !important;
   background-size: cover !important;
-  /* background-image: url(../images/banner_bg.jpg); */
   background-image: url(../images/WelkinMainImage.jpg);
+  /* background: #000; */
+}
+.banner-slide img {
+  height: 100vh;
+  object-fit: cover;
+  object-position: center;
 }
 /* .overlay {
   position: absolute;
@@ -640,7 +657,6 @@ button {
   height: 100%;
   background-color: rgba(255, 255, 255, 0.1 ); 
 } */
-
 
 .tf__banner_2 div,
 .tf__banner div {
@@ -652,7 +668,6 @@ button {
   flex-direction: column;
   justify-content: center;
   padding-top: 200px;
-  
 }
 
 .tf__banner_text h5 {
@@ -3554,18 +3569,18 @@ button {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  margin-bottom: 45px;
+  margin-bottom: 50px;
 }
 
 .tf__contact_single .icon {
-  width: 75px;
-  height: 75px;
-  line-height: 75px;
+  width: 55px;
+  height: 55px;
+  line-height: 55px;
   text-align: center;
   background: var(--colorBlack);
   color: var(--colorWhite);
   border-radius: 50%;
-  font-size: 25px;
+  font-size: 20px;
   margin-right: 20px;
 }
 
@@ -3574,7 +3589,7 @@ button {
 }
 
 .tf__contact_single .icon.orange {
-  background: var(--colorPrimary);
+  background: var(--colorSecondary);
 }
 
 .tf__contact_single .icon.green {
@@ -3586,7 +3601,7 @@ button {
 }
 
 .tf__contact_single .text h3 {
-  font-size: 25px;
+  font-size: 20px;
   font-weight: 700;
   text-transform: capitalize;
   margin-bottom: 5px;
@@ -3595,7 +3610,7 @@ button {
 .tf__contact_single .text a,
 .tf__contact_single .text p {
   display: block;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 400;
   color: var(--paraColor);
 }
@@ -4354,11 +4369,11 @@ button {
 .tf__banner_2 {
   margin-top: -65px;
   height: 850px;
+  margin-top: 6rem;
   background-position: center !important;
   background-repeat: no-repeat !important;
   background-size: cover !important;
   position: relative;
-  /* background-image: url(../images/banner_bg2.jpg); */
   background-image: url(../images/WelkinMainImage.jpg);
 }
 
@@ -4370,7 +4385,6 @@ button {
 }
 
 .tf__banner_2_text h1 span {
-  /* background: var(--colorBlue); */
   background: var(--colorPrimary);
   color: var(--colorWhite);
   text-decoration: none;
@@ -10246,7 +10260,6 @@ section.tf__counter_3 {
   }
 }
 
-
 /* SPIN ANIMATION */
 @keyframes spin {
   0% { transform: rotate(0deg); }
@@ -10255,3 +10268,58 @@ section.tf__counter_3 {
 .spin {
   animation: spin 1s infinite linear;
 }
+
+
+/* OUR MISSION, VISION AND OFFER */
+.mission-image {
+  width: 200px;
+  height: 200px;
+  margin-left: 6em;
+  object-fit: cover;
+  animation: scaleAnimation 2s infinite alternate;
+}
+.vision-image{
+  width: 150px;
+  object-fit: cover;
+  animation: scaleAnimation 2s infinite alternate;
+}
+@keyframes scaleAnimation {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.1);
+  }
+}
+.offer-card {
+  background-color: #fefefe;
+  height: 250px !important;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 2rem 0;
+}
+.offer-card img
+{
+  height: 100%;
+  width: 120px;
+}
+
+.card-slider {
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.card-slider .slick-slide {
+  padding: 0 15px;
+}
+
+.card-slider .slick-prev,
+.card-slider .slick-next {
+  color: black;
+}
+
+.card-slider .slick-prev:hover,
+.card-slider .slick-next:hover {
+  color: blue;
+}
+/* OUR MISSION, VISION AND OFFER END */

@@ -97,6 +97,14 @@ export default async function Home() {
       class: '(Pre-Primary Wing) LKG IRIS',
       desc: 'Best Female Student',
     },
+    {
+      _id: '5',
+      imgSrc: { alt: 'Work 2', image: 'images/team_9.jpg' },
+      task: 'Task 2',
+      color: 'orange',
+      class: '(Pre-Primary Wing) LKG IRIS',
+      desc: 'Best Female Student',
+    },
 
   ];
 
@@ -125,10 +133,10 @@ export default async function Home() {
     <>
       <NavbarSection style="" logo="images/welkinLogo.png" />
       <BannerSection />
+      <VissionMissionOffer />
       <NotificationSection />
       <ChairmanSection />
       <CounterArea marginTop='' counters={counters} />
-      <VissionMissionOffer />
       <VideoSection />
       <VideoModal />
       <AllTeamMemberSection 

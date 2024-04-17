@@ -25,12 +25,12 @@ const ContactPageSection = () => {
                 </div>
                 <div className="text">
                   <h3>Call</h3>
-                  <a href="callto:+91 1800 890 1866">+91 1800 890 1866</a>
+                  <a href="callto:1800 890 1866">1800 890 1866</a>
                 </div>
               </div>
               <div className="tf__contact_single">
                 <div className="icon orange">
-                  <i className="fas fa-phone-alt"></i>
+                  <i className="fas fa-envelope"></i>
                 </div>
                 <div className="text">
                   <h3>mail</h3>
@@ -39,7 +39,7 @@ const ContactPageSection = () => {
               </div>
               <div className="tf__contact_single">
                 <div className="icon green">
-                  <i className="fas fa-phone-alt"></i>
+                  <i className="fas fa-map-marker-alt"></i>
                 </div>
                 <div className="text">
                   <h3>address</h3>

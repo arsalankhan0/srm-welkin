@@ -9,7 +9,7 @@ const WorkSlider = ({workData} : Props) => {
   return (
     <Slider
       className="row work_slider"
-      slidesToShow={3} // Set the number of slides to show
+      slidesToShow={4} // Set the number of slides to show
       infinite={true}
       dots={true}
       autoplay={true}

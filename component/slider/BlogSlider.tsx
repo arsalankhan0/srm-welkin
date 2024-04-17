@@ -8,6 +8,7 @@ interface Props {
 }
 const BlogSlider = ({blogData} : Props) => {
   return (
+    <div className="container">
     <Slider
       className="row blog_slider"
       slidesToShow={3} // Set the number of slides to show
@@ -71,6 +72,7 @@ const BlogSlider = ({blogData} : Props) => {
         </div>
       ))}
     </Slider>
+      </div>
   );
 };
 

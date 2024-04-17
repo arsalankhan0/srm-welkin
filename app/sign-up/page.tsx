@@ -6,7 +6,7 @@ import RegisterSection from '@/component/authentication/RegisterSection'
 
 export const metadata: Metadata = {
     title: "SRM Welkin",
-    description: "Developed by Azizur Rahman",
+    description: "Higher Secondary School Sopore",
   }
 const page = () => {
   return (

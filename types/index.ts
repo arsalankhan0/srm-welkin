@@ -72,9 +72,6 @@ export type TeamType = {
     },
     name: string,
     description?: string,
-    // slug: string,
-    // about: string,
-    // phone: number,
 }
 
 export type ActivityType = {
