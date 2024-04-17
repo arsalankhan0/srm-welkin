@@ -1,15 +1,26 @@
 "use client";
 import { AlumniType } from "@/types";
-import React from "react";
+import React, { useState } from "react";
 import Slider from "react-slick";
 interface Props {
   alumniData: AlumniType[];
 }
 const CourseSlider = ({alumniData} : Props) => {
+  const [expandedMessages, setExpandedMessages] = useState(
+    alumniData.map(() => false)
+  );
+
+  const handleToggleMessage = (index: number) => {
+    // Creating copy of the current state
+    const newExpandedMessages = [...expandedMessages];
+    // Toggle the state for the clicked card
+    newExpandedMessages[index] = !newExpandedMessages[index];
+    setExpandedMessages(newExpandedMessages);
+  };
   return (
     <Slider
       className="row event_slider"
-      slidesToShow={3} // Set the number of slides to show
+      slidesToShow={4} // Set the number of slides to show
       infinite={true}
       dots={true}
       arrows={false}
@@ -48,7 +59,7 @@ const CourseSlider = ({alumniData} : Props) => {
         },
       ]}
     >
-      {alumniData.map((item) => (
+      {alumniData.map((item, index) => (
         <div className="col-xl-4 wow fadeInUp" key={item._id}>
           <div className="tf__single_courses">
             <div className="tf__single_courses_img">
@@ -62,10 +73,27 @@ const CourseSlider = ({alumniData} : Props) => {
               <li>
                 <i className="fas fa-user"></i> {item.name}
               </li>
+              <li>
+                <i className="fas fa-briefcase"></i> {item.profession}
+              </li>
+              <li>
+                <i className="fas fa-calendar"></i> {item.batch}
+              </li>
             </ul>
             <div className="tf__single_courses_text">
-                {item.profession}
-              <p className="batch">{item.batch}</p>
+              {/* <p className="batch">{item.message}</p> */}
+              <p className="batch">
+                {expandedMessages[index]
+                  ? item.message 
+                  : item.message.length > 50
+                  ? `${item.message.slice(0, 50)}...`
+                  : item.message}{" "}
+                {item.message.length > 50 && (
+                  <button className="bg-transparent text-primary" onClick={() => handleToggleMessage(index)}>
+                    {expandedMessages[index] ? "Show less" : "Show more"}
+                  </button>
+                )}
+              </p>
             </div>
           </div>
         </div>

@@ -2892,8 +2892,9 @@ button {
 
 .tf__single_course_header {
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: start;
   justify-content: space-between;
   border-bottom: 1px solid #ddd;
   padding: 8px 30px 15px 30px;

@@ -18,7 +18,8 @@ const page = async () => {
             },
             name: 'SHARIK AHMAD WANI',
             profession: 'MBBS (GMC SRINAGAR)',
-            batch: '2018'
+            batch: '2018',
+            message: 'The time i spent in welkin itself is cherishable.'
         },
         {
             _id: '2',
@@ -28,7 +29,8 @@ const page = async () => {
             },
             name: 'SYED MUSKAN SHAFIQ',
             profession: 'B.A HONS. JOURNALISM',
-            batch: '2018'
+            batch: '2018',
+            message: 'The skills I developed in Welkin.'
         },
         {
             _id: '3',
@@ -38,7 +40,8 @@ const page = async () => {
             },
             name: 'SUMIYA HAMID',
             profession: 'STUDENT',
-            batch: '2018'
+            batch: '2018',
+            message: 'Every moment in welkin is a golden memory for me.'
         },
         {
             _id: '4',
@@ -48,7 +51,8 @@ const page = async () => {
             },
             name: 'FAISAL AHAD SHALA',
             profession: 'IMBA',
-            batch: '2018'
+            batch: '2018',
+            message: 'Every moment spent there has got it’s own charm❤️.'
         },
         {
             _id: '5',
@@ -58,7 +62,8 @@ const page = async () => {
             },
             name: 'ANSAB ASHRAF',
             profession: 'MBBS',
-            batch: '2018'
+            batch: '2018',
+            message: 'Some teachers are always gonna be special for me and the olympiads were 🔥.'
         },
         {
             _id: '6',
@@ -68,7 +73,8 @@ const page = async () => {
             },
             name: 'DR. NAJAMU SAQIB REGOO',
             profession: 'D.V.M, M.S, PGCERT Small Animal Medicine',
-            batch: '2018'
+            batch: '2018',
+            message: 'Words never justify questions like that.'
         },
         {
             _id: '7',
@@ -78,7 +84,8 @@ const page = async () => {
             },
             name: 'SUHAIB RASHID SHAH',
             profession: 'MBBS',
-            batch: '2018'
+            batch: '2018',
+            message: 'I remember some wonderful teachers of welkin whom I would like to name ; Sajad sir (SST) Rafiq sir (science) Showkat sir (English ) GNT Sir ( geography) .'
         },
         {
             _id: '8',
@@ -88,7 +95,8 @@ const page = async () => {
             },
             name: 'RAMEEZ YATOO',
             profession: 'BSc Computer Science',
-            batch: '2018'
+            batch: '2018',
+            message: 'The time spent with friends and some of the best teachers in the world!'
         }
     ]
     return (

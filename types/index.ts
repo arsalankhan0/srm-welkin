@@ -47,7 +47,8 @@ export type AlumniType = {
     },
     name: string,
     profession: string,
-    batch: string
+    batch: string,
+    message: string
 }
 export type BlogType = {
     _id: string,

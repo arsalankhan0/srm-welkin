@@ -120,7 +120,7 @@ const MissionVisionOffer = () => {
                     <div className="offer-card d-flex align-items-center justify-content-center">
                       <div className="d-flex flex-column align-items-center">
                         <img
-                          src="/images/offering/supportive.png"
+                          src="/images/supportive.png"
                           alt="img"
                           className="mb-3"
                         />
@@ -132,7 +132,7 @@ const MissionVisionOffer = () => {
                     <div className="offer-card d-flex align-items-center justify-content-center">
                       <div className="d-flex flex-column align-items-center">
                         <img
-                          src="/images/offering/learningExperience.png"
+                          src="/images/learningExperience.png"
                           alt="img"
                           className="mb-3"
                         />
@@ -144,7 +144,7 @@ const MissionVisionOffer = () => {
                     <div className="offer-card d-flex align-items-center justify-content-center">
                       <div className="d-flex flex-column align-items-center">
                         <img
-                          src="/images/offering/communityEngagement.png"
+                          src="/images/communityEngagement.png"
                           alt="img"
                           className="mb-3"
                         />
@@ -156,7 +156,7 @@ const MissionVisionOffer = () => {
                     <div className="offer-card d-flex align-items-center justify-content-center">
                       <div className="d-flex flex-column align-items-center">
                         <img
-                          src="/images/offering/approach.png"
+                          src="/images/approach.png"
                           alt="img"
                           className="mb-3"
                         />
@@ -168,7 +168,7 @@ const MissionVisionOffer = () => {
                     <div className="offer-card d-flex align-items-center justify-content-center">
                       <div className="d-flex flex-column align-items-center">
                         <img
-                          src="/images/offering/mentorship.png"
+                          src="/images/mentorship.png"
                           alt="img"
                           className="mb-3"
                         />
@@ -180,7 +180,7 @@ const MissionVisionOffer = () => {
                     <div className="offer-card d-flex align-items-center justify-content-center">
                       <div className="d-flex flex-column align-items-center">
                         <img
-                          src="/images/offering/benefits.png"
+                          src="/images/benefits.png"
                           alt="img"
                           className="mb-3"
                         />
@@ -192,7 +192,7 @@ const MissionVisionOffer = () => {
                     <div className="offer-card d-flex align-items-center justify-content-center">
                       <div className="d-flex flex-column align-items-center">
                         <img
-                          src="/images/offering/support.png"
+                          src="/images/support.png"
                           alt="img"
                           className="mb-3"
                         />
