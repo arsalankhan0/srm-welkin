@@ -1,25 +1,53 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import apiConfig from '@/api.config.json';
+import axios from "axios";
 
 const ContactForm = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const API_HOST = apiConfig.API_HOST;
+  const [loading, setLoading] = useState(false);
 
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+      
+        if (!name || !email || !message) 
+        {
+          toast.error("Please fill out all fields.", { position: "top-right" });
+          return;
+        }
+        try 
+        {
+          setLoading(true);
 
-    if (!name || !email || !message) {
-      toast.error("Please fill out all fields.", { position: "top-right" });
-    }  else {
-      toast.success("Form submitted successfully!", {
-        position: "top-right",
-      });
-      setName("");
-      setEmail("");
-      setMessage("");
-    }
+          const formData = new FormData();
+          formData.append('name', name);
+          formData.append('email', email);
+          formData.append('message', message);
+
+          const response = await axios.post(`${API_HOST}/sendContactEmail`, formData, {
+              headers: {
+                  'Content-Type': 'multipart/form-data'
+              }
+          });
+
+          toast.success("You Form has been recorded.");
+        } 
+        catch (error:any) 
+        {
+            toast.error("Something went wrong! Please try again later.");
+            console.log(error.response.data);
+        }
+        finally 
+        {
+            setLoading(false);
+            setName("");
+            setEmail("");
+            setMessage("");
+        }
   };
 
   return (
@@ -51,8 +79,9 @@ const ContactForm = () => {
             onChange={(e) => setMessage(e.target.value)}
             required
           ></textarea>
-          <button type="submit" className="common_btn_2">
-            SUBMIT
+          <button type="submit" className="common_btn_2" disabled={loading}>
+            {loading && <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>}
+            {loading ? 'Submitting..' : 'Submit'}
           </button>
         </div>
       </div>

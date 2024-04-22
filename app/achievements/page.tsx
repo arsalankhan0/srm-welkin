@@ -1,16 +1,14 @@
 import Layout from "@/component/layout/Layout";
 import React from "react";
 import type { Metadata } from "next";
-import AllTeamMemberSection from "@/component/team/AllTeamMemberSection";
 import CategorySection3 from '@/component/category/CategorySection3';
-import apiConfig from '@/api.config.json';
+import Achievements from "@/component/achievements/Achievements";
 
 export const metadata: Metadata = {
   title: "SRM Welkin Achievements Page",
   description: "Higher Secondary School Sopore",
 };
 
-const API_HOST = apiConfig.API_HOST;
 
 const page = async () => {
 
@@ -36,47 +34,10 @@ const page = async () => {
       _img: '/images/Awards/award_5.jpg'
     },
   ]
-  const teamData= [
-    {
-      _id: '1',
-      imgSrc: { alt: 'Team Member 1', image: 'images/team_1.jpg' },
-      name: 'John Doe',
-    },
-    {
-      _id: '2',
-      imgSrc: { alt: 'Team Member 2', image: 'images/team_2.jpg' },
-      name: 'Jane Smith',
-    },
-    {
-      _id: '3',
-      imgSrc: { alt: 'Team Member 1', image: 'images/team_3.jpg' },
-      name: 'John Doe',
-    },
-    {
-      _id: '4',
-      imgSrc: { alt: 'Team Member 2', image: 'images/team_4.jpg' },
-      name: 'Jane Smith',
-    },
-    {
-      _id: '5',
-      imgSrc: { alt: 'Team Member 1', image: 'images/team_5.jpg' },
-      name: 'John Doe',
-    },
-    {
-      _id: '6',
-      imgSrc: { alt: 'Team Member 2', image: 'images/team_6.jpg' },
-      name: 'Jane Smith',
-    },
-    {
-      _id: '6',
-      imgSrc: { alt: 'Team Member 2', image: 'images/team_7.jpg' },
-      name: 'Jane Smith',
-    },
-  ];
   return (
     <Layout>
       <section className="tf__about_us_page mt_130">
-        <AllTeamMemberSection title="Achievements" teamData={teamData} />
+        <Achievements title="Achievements"/>
         <CategorySection3 AchievementImages={AchievementImageData}/>
       </section>
     </Layout>

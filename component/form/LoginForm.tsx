@@ -1,34 +1,70 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import axios from "axios";
+import apiConfig from '@/api.config.json';
+import { useRouter } from "next/navigation";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const API_HOST = apiConfig.API_HOST;
+  const router = useRouter();
 
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!password || !email) {
+    if (!email || !password) {
       toast.error("Please fill out all fields.", { position: "top-right" });
-    } else {
-      // If the form is successfully submitted, show a success toast
-      toast.success("Logged In successfully!", {
-        position: "top-right",
+      return;
+    }
+    try 
+    {
+      setIsLoading(true);
+
+      const formData = new FormData();
+      formData.append('username', email);
+      formData.append('password', password);
+
+      const response = await axios.post(`${API_HOST}/Adminlogin`,formData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
-      setPassword("");
-      setEmail("");
+
+      if (response.data.success) 
+      {
+        setPassword("");
+        setEmail(""); 
+        router.push("/admin/dashboard");      
+      } 
+      else 
+      {
+        toast.error("Login failed.");
+        console.log(response.data.message)
+      }
+    } 
+    catch (error) 
+    {
+      console.error("Login error:", error);
+      toast.error("Invalid Credentials!");
+    } 
+    finally 
+    {
+      setIsLoading(false);
     }
   };
+
   return (
     <form onSubmit={handleFormSubmit}>
       <div className="row">
         <div className="col-xl-12">
           <div className="tf__login_imput">
-            <label>email</label>
+            <label>username</label>
             <input
-              type="email"
-              placeholder="Email"
+              type="text"
+              placeholder="Username"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -65,8 +101,8 @@ const LoginForm = () => {
         </div>
         <div className="col-xl-12">
           <div className="tf__login_imput">
-            <button type="submit" className="common_btn">
-              login
+            <button type="submit" className="common_btn" disabled={isLoading}>
+              {isLoading ? "Loading..." : "Login"}
             </button>
           </div>
         </div>

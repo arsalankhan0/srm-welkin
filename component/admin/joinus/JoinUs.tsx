@@ -1,29 +1,56 @@
 "use client"
 import Layout from "@/component/admin/Layout/Layout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RiEyeLine, RiDeleteBinLine } from "react-icons/ri";
 import Link from 'next/link';
 import { toast } from "react-toastify";
 import ConfirmModal from "@/component/confirmationmodals/ConfirmModal";
+import apiConfig from '@/api.config.json';
+import { JoinType } from "@/types";
+import axios from "axios";
 
 const JoinRequests = () => {
 
-    const [joinRequests, setJoinRequests] = useState([
-        { id: 1, name: "John Doe", positionApplied: "Software Developer", qualification: "Bachelor's in Computer Science" },
-        { id: 2, name: "Jane Doe", positionApplied: "Data Analyst", qualification: "Master's in Statistics" },
-        { id: 3, name: "Alice Smith", positionApplied: "Graphic Designer", qualification: "Bachelor's in Fine Arts" },
-    ]);
-
+    const API_HOST = apiConfig.API_HOST;
+    const [joinRequests, setJoinRequests] = useState<JoinType[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const [selectedJoinReqtId, setSelectedJoinReqId] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const perPage = 8;
+
+    useEffect(() => {
+        fetchRequests();
+    }, [currentPage]);
+
+    const fetchRequests = async () => {
+        setIsLoading(true);
+        try 
+        {
+            const response = await axios.get(`${API_HOST}/getallforms`);
+            setJoinRequests(response.data.reverse());
+        } 
+        catch (error) 
+        {
+            console.error('Error fetching Forms:', error);
+            toast.error('Failed to fetch Join Requests!');
+        }
+        finally 
+        {
+            setIsLoading(false);
+        }
+    };
+
      // Function to handle Join Request deletion
      const handleDelete = async (id:any) => {
-        try {
-            // Placeholder for API call to delete Join Request
-            // await axios.delete(`/api/joinus/${id}`);
-            setJoinRequests(prevJoinReq => prevJoinReq.filter(joinRequests => joinRequests.id !== id));
+        try 
+        {
+            await axios.delete(`${API_HOST}/deletebyId/${id}`);
+            setJoinRequests(prevJoinReq => prevJoinReq.filter(joinRequests => joinRequests._id !== id));
             toast.success('Request deleted successfully');
-        } catch (error) {
+        } 
+        catch (error) 
+        {
             console.error('Error deleting Join Request:', error);
             toast.error('Failed to delete Join Request!');
         }
@@ -43,6 +70,13 @@ const JoinRequests = () => {
         setShowConfirmationModal(false);
     };
 
+    // Get the current page of notifications based on currentPage and perPage
+    const getCurrentPageRecords = () => {
+        const startIndex = (currentPage - 1) * perPage;
+        const endIndex = startIndex + perPage;
+        return joinRequests.slice(startIndex, endIndex);
+    };
+
     return (
         <Layout>
             <div className="container-fluid">
@@ -60,21 +94,49 @@ const JoinRequests = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {joinRequests.map((request, index) => (
-                                <tr key={request.id}>
-                                    <th scope="row">{index + 1}</th>
-                                    <td>{request.name}</td>
-                                    <td>{request.positionApplied}</td>
+                            {joinRequests.length === 0 && !isLoading && (
+                                <tr className='text-center'>
+                                    <td colSpan={5}>No join requests found</td>
+                                </tr>
+                            )}
+                            {isLoading && <tr className='text-center'><td colSpan={5}>Loading Requests...</td></tr>}
+                            {joinRequests.length > 0 && getCurrentPageRecords().map((request, index) => (
+                                <tr key={request._id}>
+                                    <th scope="row">{(currentPage - 1) * perPage + index + 1}</th>
+                                    <td>{request.fullName}</td>
+                                    <td>{request.position}</td>
                                     <td>{request.qualification}</td>
                                     <td>
-                                        <Link href={`/admin/joinus/viewfull?id=${request.id}`}><RiEyeLine className="me-2 fs-4" style={{ cursor: "pointer", color: "blue" }} title="View Full Details" /></Link>
-                                        <RiDeleteBinLine className="fs-4" style={{ cursor: "pointer", color: "red" }} onClick={() => openConfirmationModal(request.id)} title="Delete" />
+                                        <Link href={`/admin/joinus/viewfull?id=${request._id}`}><RiEyeLine className="me-2 fs-4" style={{ cursor: "pointer", color: "blue" }} title="View Full Details" /></Link>
+                                        <RiDeleteBinLine className="fs-4" style={{ cursor: "pointer", color: "red" }} onClick={() => openConfirmationModal(request._id)} title="Delete" />
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
+                {/* Pagination */}
+                <nav aria-label="Page navigation mt-5">
+                    <ul className="pagination justify-content-center">
+                        <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                            <button className="page-link" onClick={() => setCurrentPage(currentPage - 1)} aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span className="visually-hidden">Previous</span>
+                            </button>
+                        </li>
+                        {Array.from({ length: Math.ceil(joinRequests.length / perPage) }, (_, i) => (
+                            <li key={i + 1} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
+                                <button className="page-link" onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
+                            </li>
+                        ))}
+                        <li className={`page-item ${currentPage === Math.ceil(joinRequests.length / perPage) ? 'disabled' : ''}`}>
+                            <button className="page-link" onClick={() => setCurrentPage(currentPage + 1)} aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                                <span className="visually-hidden">Next</span>
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
             </div>
             {showConfirmationModal && (
                 <>

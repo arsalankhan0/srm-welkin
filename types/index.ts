@@ -41,14 +41,15 @@ export type CourseType = {
 }
 export type AlumniType = {
     _id: string,
-    imgSrc: {
-        alt: string,
-        image: string
-    },
-    name: string,
-    profession: string,
-    batch: string,
-    message: string
+    name: String,
+    address: String,
+    phoneNumber: Number,
+    presentAddress: String,
+    designation: String,
+    batch: String,
+    image: String,
+    message: String,
+    __v: number,
 }
 export type BlogType = {
     _id: string,
@@ -65,14 +66,45 @@ export type BlogType = {
     desc: string,
     author: string,
 }
-export type TeamType = {
+export type StaffType = {
     _id: string,
-    imgSrc: {
-        alt: string,
-        image: string
-    },
+    staffImage: string,
+    staffName: string,
+    staffDescription: string,
+    __v: number,
+}
+export type AchievementType = {
+    _id: string,
+    title: string,
+    image: string,
+    __v: number,
+}
+export type StudentType = {
+    _id: string,
+    studentImage: string,
+    studentName: string,
+    studentAward: string,
+    studentClass: string,
+    __v: number,
+}
+export type ContactType = {
     name: string,
-    description?: string,
+    email: string,
+    message: string,
+}
+export type JoinType = {
+    _id: string,
+    fullName: string,
+    phoneNumber: Number,
+    email: string,
+    address: string,
+    position: string,
+    qualification: string,
+    workExperience?: string,
+    companyName?: string,
+    jobTitle?: string,
+    resume: string,
+    __v: number,
 }
 
 export type ActivityType = {

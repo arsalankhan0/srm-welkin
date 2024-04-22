@@ -1,30 +1,23 @@
-"use client"
+"use client";
 import React, { useRef, useEffect, useState } from 'react';
 import './NoticeAnim.css';
 import Navlink from '../navbar/Navlink';
+import axios from 'axios';
+import apiConfig from '@/api.config.json';
 
-const notifications = [
-    {
-        id: 1,
-        title: "Important Announcement Regarding Final Exams",
-        content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce nec felis in dolor maximus ullamcorper. Duis tincidunt eros nec mi consequat, vel consequat leo tempor.",
-        date: "March 19, 2024"
-    },
-    {
-        id: 2,
-        title: "School will reopen shortly",
-        content: "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Curabitur eget nisi at lectus condimentum suscipit.",
-        date: "March 21, 2024"
-    },
-    {
-        id: 3,
-        title: "Admission open for 2023-2024",
-        content: "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Curabitur eget nisi at lectus condimentum suscipit.",
-        date: "March 21, 2024"
-    },
-];
+interface Notification {
+    _id: string;
+    NoticeTitle: string;
+    NoticeDescription: string;
+    createdAt: string;
+    __v: number;
+}
 
-const NoticeBoard = () => {
+const NoticeBoard: React.FC = () => {
+    const API_HOST = apiConfig.API_HOST;
+    const [notifications, setNotifications] = useState<Notification[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+
     const [isIntersecting, setIsIntersecting] = useState(false);
     const marqueeRef = useRef(null);
 
@@ -47,20 +40,47 @@ const NoticeBoard = () => {
         };
     }, []);
 
+
+    useEffect(() => {
+        const fetchNotifications = async () => {
+            setIsLoading(true);
+            try 
+            {
+                const response = await axios.get(`${API_HOST}/fetchNotifications`);
+                const sortedNotifications:Notification[] = response.data.notifications.sort((a:Notification, b:Notification) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                const topFiveNotifications = sortedNotifications.slice(0, 5);
+                setNotifications(topFiveNotifications);
+                console.log("Notifications: ", topFiveNotifications);
+            } 
+            catch (error) 
+            {
+                console.error('Error fetching notifications:', error);
+            }
+            finally 
+            {
+                setIsLoading(false);
+            }
+        };
+
+        fetchNotifications();
+    }, []);
+
     return (
         <>
             <div className="tf__heading_area my-4">
                 <h5 className='fs-3'>Latest Notifications</h5>
             </div>
             <div ref={marqueeRef} className={`container marquee`}>
+                {isLoading && <p className='text-light text-center'>Loading notifications...</p>}
                 <div className={`marquee-inner ${isIntersecting ? 'start-scroll' : ''}`}>
-                    {notifications.map(notification => (
-                        <div key={notification.id} className="notification">
-                            <Navlink href="/notifications">{notification.title}</Navlink>
+                    {notifications && notifications.map(notification => (
+                        <div key={notification._id} className="notification">
+                            <Navlink href={`/notifications/notificationdetails?id=${notification._id}`}>{notification.NoticeTitle}</Navlink>
                         </div>
                     ))}
                 </div>
             </div>
+
         </>
     );
 }

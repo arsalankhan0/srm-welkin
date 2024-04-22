@@ -1,4 +1,5 @@
 "use client"
+import { StaffType } from "@/types";
 import Layout from "@/component/admin/Layout/Layout";
 import ConfirmModal from "@/component/confirmationmodals/ConfirmModal";
 import { useEffect, useState } from 'react';
@@ -6,44 +7,52 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import Link from 'next/link';
 import { RiEdit2Line, RiDeleteBinLine } from 'react-icons/ri';
+import apiConfig from '@/api.config.json';
+
 
 const ManageLeaderBoard = () => {
-    const [employees, setEmployees] = useState([
-        { id: 1, name: 'Employee 1', description: 'This is employee 1', imageUrl: '/images/team_1.jpg' },
-        { id: 2, name: 'Employee 2', description: 'This is employee 2', imageUrl: '/images/team_2.jpg' },
-        { id: 3, name: 'Employee 3', description: 'This is employee 3', imageUrl: '/images/team_3.jpg' },
-    ]);
+    const API_HOST = apiConfig.API_HOST;
+    const [employees, setEmployees] = useState<StaffType[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const perPage = 8;
 
     useEffect(() => {
-        // Fetch employees from the API when needed
-        // fetchEmployees();
-    }, []);
+        fetchEmployees();
+    }, [currentPage]);
 
-    // Function to fetch employees from the API
     const fetchEmployees = async () => {
+        setIsLoading(true);
         try 
         {
-            const response = await axios.get('/api/employees');
-            setEmployees(response.data);
+            const response = await axios.get(`${API_HOST}/getAllStaffMembers`);
+            const sortedMembers: StaffType[] = response.data.reverse();
+            setEmployees(sortedMembers);
         } 
         catch (error) 
         {
             console.error('Error fetching employees:', error);
         }
+        finally 
+        {
+            setIsLoading(false);
+        }
     };
 
     // Function to handle employee deletion
     const handleDelete = async (id:any) => {
-        try {
-            // Placeholder for API call to delete employee
-            // await axios.delete(`/api/employees/${id}`);
-            setEmployees(prevEmployees => prevEmployees.filter(employee => employee.id !== id));
-            toast.success('Employee deleted successfully');
-        } catch (error) {
+        try 
+        {
+            await axios.delete(`${API_HOST}/deleteStaffMemberById/${id}`);
+            setEmployees(prevEmployees => prevEmployees.filter(employee => employee._id !== id));
+            toast.success('Employee deleted successfully from leader board.');
+        } 
+        catch (error) 
+        {
+            toast.error('Failed to delete employee! Please try again later.');
             console.error('Error deleting employee:', error);
-            toast.error('Failed to delete employee');
         }
         setSelectedEmployeeId(null);
         setShowConfirmationModal(false);
@@ -59,6 +68,14 @@ const ManageLeaderBoard = () => {
     const closeConfirmationModal = () => {
         setSelectedEmployeeId(null);
         setShowConfirmationModal(false);
+    };
+
+
+    // Get the current page of notifications based on currentPage and perPage
+    const getCurrentPageRecords = () => {
+        const startIndex = (currentPage - 1) * perPage;
+        const endIndex = startIndex + perPage;
+        return employees.slice(startIndex, endIndex);
     };
 
     return (
@@ -78,23 +95,48 @@ const ManageLeaderBoard = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {employees.map((employee, index) => (
-                                <tr key={employee.id}>
-                                    <th scope="row">{index + 1}</th>
+                        {isLoading && <tr className='text-center'><td colSpan={4}>Loading employees...</td></tr>}
+                            {getCurrentPageRecords().map((employee, index) => (
+                                <tr key={employee._id}>
+                                    <th scope="row">{(currentPage - 1) * perPage + index + 1}</th>
                                     <td>
-                                        <img src={employee.imageUrl} alt="img" className="leader_board_img"/>
+                                        <img src={employee.staffImage} alt="img" className="leader_board_img"/>
                                     </td>
-                                    <td>{employee.name}</td>
-                                    <td>{employee.description}</td>
+                                    <td>{employee.staffName}</td>
+                                    <td>{employee.staffDescription}</td>
                                     <td>
                                         {/* <Link href={`/admin/staffleaderboard/updateemployee?id=${employee.id}`}><RiEdit2Line className="me-2 fs-4" style={{ cursor: "pointer", color: "blue" }} title="Edit" /></Link> */}
-                                        <RiDeleteBinLine className="fs-4" style={{ cursor: "pointer", color: "red" }} onClick={() => openConfirmationModal(employee.id)} title="Delete" />
+                                        <RiDeleteBinLine className="fs-4" style={{ cursor: "pointer", color: "red" }} onClick={() => openConfirmationModal(employee._id)} title="Delete" />
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
+
+                {/* Pagination */}
+                <nav aria-label="Page navigation mt-5">
+                    <ul className="pagination justify-content-center">
+                        <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                            <button className="page-link" onClick={() => setCurrentPage(currentPage - 1)} aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span className="visually-hidden">Previous</span>
+                            </button>
+                        </li>
+                        {Array.from({ length: Math.ceil(employees.length / perPage) }, (_, i) => (
+                            <li key={i + 1} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
+                                <button className="page-link" onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
+                            </li>
+                        ))}
+                        <li className={`page-item ${currentPage === Math.ceil(employees.length / perPage) ? 'disabled' : ''}`}>
+                            <button className="page-link" onClick={() => setCurrentPage(currentPage + 1)} aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                                <span className="visually-hidden">Next</span>
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
+
             </div>
             {showConfirmationModal && (
                 <>

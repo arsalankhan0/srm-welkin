@@ -1,11 +1,13 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from "@/component/admin/Layout/Layout";
-import { useEffect } from 'react';
 import axios from 'axios';
 import { FaBullhorn, FaUserTie, FaGraduationCap, FaTrophy, FaUserPlus, FaUserFriends, FaSync } from 'react-icons/fa';
+import apiConfig from '@/api.config.json';
+import Link from "next/link";
 
 const Dashboard = () => {
+    const API_HOST = apiConfig.API_HOST;
     const [totalNotices, setTotalNotices] = useState(0);
     const [totalStaff, setTotalStaff] = useState(0);
     const [totalStudents, setTotalStudents] = useState(0);
@@ -22,19 +24,21 @@ const Dashboard = () => {
         try 
         {
             setLoading(true);
-            const noticesResponse = await axios.get('/api/notices');
-            const staffResponse = await axios.get('/api/staff');
-            const studentsResponse = await axios.get('/api/students');
-            const achievementsResponse = await axios.get('/api/achievements');
-            const joinUsResponse = await axios.get('/api/join-us');
-            const alumniResponse = await axios.get('/api/alumni');
+            const [noticesResponse, staffResponse, studentsResponse, achievementsResponse, joinUsResponse, alumniResponse] = await Promise.all([
+                axios.get(`${API_HOST}/fetchNotifications`),
+                axios.get(`${API_HOST}/getAllStaffMembers`),
+                axios.get(`${API_HOST}/getAllStudents`),
+                axios.get(`${API_HOST}/getAllAchievements`),
+                axios.get(`${API_HOST}/getallforms`),
+                axios.get(`${API_HOST}/getAllAlumniForms`)
+            ]);
 
-            setTotalNotices(noticesResponse.data.length);
+            setTotalNotices(noticesResponse.data.notifications.length);
             setTotalStaff(staffResponse.data.length);
             setTotalStudents(studentsResponse.data.length);
-            setTotalAchievements(achievementsResponse.data.length);
+            setTotalAchievements(achievementsResponse.data.achievements.length);
             setTotalJoinUs(joinUsResponse.data.length);
-            setTotalAlumni(alumniResponse.data.length);
+            setTotalAlumni(alumniResponse.data.alumniForms.length);
         } 
         catch (error) 
         {
@@ -59,22 +63,34 @@ const Dashboard = () => {
                 </div>
                 <hr />
                 <div className="row mt-4">
-                    <DashboardCard title="Total Notices" count={totalNotices} icon={<FaBullhorn />} color="primary" />
-                    <DashboardCard title="Total Staff in Leader Board" count={totalStaff} icon={<FaUserTie />} color="success" />
-                    <DashboardCard title="Total Students in Leader Board" count={totalStudents} icon={<FaGraduationCap />} color="info" />
+                    <Link href="/admin/noticeboard/managenotice" className='col-md-4 '>
+                        <DashboardCard title="Total Notices" count={totalNotices} icon={<FaBullhorn />} color="primary" />
+                    </Link>
+                    <Link href="/admin/staffleaderboard/manageleaderboard" className='col-md-4 '>
+                        <DashboardCard title="Total Staff in Leader Board" count={totalStaff} icon={<FaUserTie />} color="success" />
+                    </Link>
+                    <Link href="/admin/studentleaderboard/manageleaderboard" className='col-md-4 '>
+                        <DashboardCard title="Total Students in Leader Board" count={totalStudents} icon={<FaGraduationCap />} color="info" />
+                    </Link>
                 </div>
-                <div className="row ">
-                    <DashboardCard title="Total Achievements" count={totalAchievements} icon={<FaTrophy />} color="warning" />
-                    <DashboardCard title="Join Requests" count={totalJoinUs} icon={<FaUserPlus />} color="secondary" />
-                    <DashboardCard title="Alumni Network" count={totalAlumni} icon={<FaUserFriends />} color="danger" />
+                <div className="row">
+                    <Link href="/admin/achievements/manageachievements" className='col-md-4'>
+                        <DashboardCard title="Total Achievements" count={totalAchievements} icon={<FaTrophy />} color="warning" />
+                    </Link>
+                    <Link href="/admin/joinus" className='col-md-4'>
+                        <DashboardCard title="Join Requests" count={totalJoinUs} icon={<FaUserPlus />} color="secondary" />
+                    </Link>
+                    <Link href="/admin/alumni/managealumni" className='col-md-4'>
+                        <DashboardCard title="Alumni Network" count={totalAlumni} icon={<FaUserFriends />} color="danger" />
+                    </Link>
                 </div>
             </div>
         </Layout>
     );
 };
 
-const DashboardCard = ({ title, count, icon, color }:any) => (
-    <div className="col-md-4 mb-4">
+const DashboardCard = ({ title, count, icon, color}:any) => (
+    <div className="mb-4">
         <div className={`card mb-4 shadow h-100 bg-${color}`}>
             <div className="card-body text-white d-flex flex-column justify-content-center">
                 <h5 className="card-title fw-bold text-center">{title}</h5>

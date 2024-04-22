@@ -25,10 +25,11 @@
 .marquee-inner {
     display: flex;
     flex-direction: row;
-    justify-content: end;
-    width: fit-content;
+    /* justify-content: end; */
+    min-width: fit-content;
     gap: 3rem;
     padding: 0 20px;
+    width: 100%;
 }
 
 /* Notification items */
@@ -49,7 +50,7 @@
 /* Marquee animation */
 @keyframes marquee {
     0% {
-        transform: translateX(140%);
+        transform: translateX(100%);
     }
     100% {
         transform: translateX(-100%);

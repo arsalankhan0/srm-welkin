@@ -2,29 +2,37 @@
 import Layout from "@/component/admin/Layout/Layout";
 import { useState, FormEvent } from 'react';
 import axios from 'axios';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import Link from 'next/link';
-
+import apiConfig from '@/api.config.json';
 
 export default function NoticeBoard() {
+    const API_HOST = apiConfig.API_HOST;
     const [noticeTitle, setNoticeTitle] = useState('');
     const [noticeDescription, setNoticeDescription] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        try {
-            const response = await axios.post('/api/addNotice', {
-                title: noticeTitle,
-                description: noticeDescription
+        try 
+        {
+            setLoading(true);
+
+            const response = await axios.post(`${API_HOST}/addNotifications`, {
+                NoticeTitle: noticeTitle,
+                NoticeDescription: noticeDescription
             });
 
-            toast.success(response.data.message);
+            toast.success("Notification added successfully.");
         }
-        catch (error: any) {
-
-            toast.error(error.response.data.message);
+        catch (error: any) 
+        {
+            toast.error("Something went wrong! Please try again later.");
+            console.log(error.response.data.message);
         }
-        finally {
+        finally 
+        {
+            setLoading(false);
             setNoticeTitle('');
             setNoticeDescription('');
         }
@@ -49,7 +57,10 @@ export default function NoticeBoard() {
                             <Link href="/admin/noticeboard/managenotice"
                                 className="btn btn-dark me-md-2">Manage Notices
                             </Link>
-                            <button type="submit" className="btn btn-primary me-md-2">Add Notice</button>
+                            <button type="submit" className="btn btn-primary me-md-2" disabled={loading}>
+                                {loading && <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>}
+                                {loading ? 'Adding Notice' : 'Add Notice'}
+                            </button>
                         </div>
                     </form>
                 </div>

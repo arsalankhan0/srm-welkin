@@ -1,6 +1,6 @@
 import React from "react";
-import CourseSlider from "../slider/CourseSlider";
-import { AlumniType, CourseType } from "@/types";
+import AlumniSlider from "../slider/AlumniSlider";
+import { AlumniType } from "@/types";
 
 type Props = {
   style: string;
@@ -18,7 +18,7 @@ const CourseSection = ({ style, alumniData } : Props) => {
             </div>
           </div>
         </div>
-        <CourseSlider alumniData={alumniData}/>
+        <AlumniSlider alumniData={alumniData}/>
       </div>
     </section>
   );

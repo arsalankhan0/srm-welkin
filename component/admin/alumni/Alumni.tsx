@@ -1,6 +1,6 @@
 "use client"
 import Layout from "@/component/admin/Layout/Layout";
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useRef } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import Link from 'next/link';
@@ -16,6 +16,8 @@ export default function Achievements() {
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [testimonial, setTestimonial] = useState('');
     const API_HOST = apiConfig.API_HOST;
+    const [loading, setLoading] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -26,12 +28,20 @@ export default function Achievements() {
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (!selectedImage) {
+        if (!selectedImage) 
+        {
             toast.error("Please select an image.");
+            return;
+        }
+        const allowedFormats = ['image/jpeg', 'image/jpg', 'image/png'];
+        if (!allowedFormats.includes(selectedImage.type)) 
+        {
+            toast.error("Invalid image format. Only JPEG, JPG, PNG images are allowed.");
             return;
         }
         try 
         {
+            setLoading(true);
             const formData = new FormData();
             formData.append('image', selectedImage);
             formData.append('name', name);
@@ -40,23 +50,24 @@ export default function Achievements() {
             formData.append('presentAddress', presentAddress);
             formData.append('designation', designation);
             formData.append('batch', batch);
-            formData.append('testimonial', testimonial);
+            formData.append('message', testimonial);
 
-            const response = await axios.post(`${API_HOST}/api/addAlumni`, formData, {
+            const response = await axios.post(`${API_HOST}/submitForm`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
 
-            toast.success(response.data.message);
+            toast.success("Alumni Added successfully.");
         } 
         catch (error: any) 
         {
-            toast.error(error.response.data.message);
+            toast.error("Something went wrong! Please try again later.");
+            console.log(error.response.data.alumniForms);
         } 
         finally 
         {
-            // Resetting form fields after submission
+            setLoading(false);
             setName('');
             setAddress('');
             setPhoneNumber('');
@@ -64,7 +75,9 @@ export default function Achievements() {
             setDesignation('');
             setBatch('');
             setTestimonial('');
-            setSelectedImage(null);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = "";
+            }
         }
     };
 
@@ -115,14 +128,17 @@ export default function Achievements() {
                         </div>
                         <div className="mb-3">
                             <label htmlFor="image" className="form-label">Upload Photograph</label>
-                            <input type="file" className="form-control" id="image" accept="image/jpeg, image/jpg, image/png" onChange={handleFileChange} required />
+                            <input type="file" ref={fileInputRef} className="form-control" id="image" accept="image/jpeg, image/jpg, image/png" onChange={handleFileChange} required />
                             <span className="text-muted" style={{ fontSize: 'small' }}>Only JPEG, JPG, PNG images are allowed</span>
                         </div>
                         <div className="d-grid gap-2 d-md-flex justify-content-md-end">
                             <Link href="/admin/alumni/managealumni" className="btn btn-dark me-md-2">
                                 Manage Alumni
                             </Link>
-                            <button type="submit" className="btn btn-primary me-md-2">Add Alumni</button>
+                            <button type="submit" className="btn btn-primary me-md-2" disabled={loading}>
+                                {loading && <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>}
+                                {loading ? 'Adding Alumni' : 'Add Alumni'}
+                            </button>
                         </div>
                     </form>
                 </div>

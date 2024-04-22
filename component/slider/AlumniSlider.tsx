@@ -17,10 +17,11 @@ const CourseSlider = ({alumniData} : Props) => {
     newExpandedMessages[index] = !newExpandedMessages[index];
     setExpandedMessages(newExpandedMessages);
   };
+  const slidesToShow = Math.min(alumniData.length, 4);
   return (
     <Slider
       className="row event_slider"
-      slidesToShow={4} // Set the number of slides to show
+      slidesToShow={slidesToShow} // Set the number of slides to show
       infinite={true}
       dots={true}
       arrows={false}
@@ -64,7 +65,7 @@ const CourseSlider = ({alumniData} : Props) => {
           <div className="tf__single_courses">
             <div className="tf__single_courses_img">
               <img
-                src={item.imgSrc.image}
+                src={item.image as string}
                 alt="courses"
                 className="img-fluid w-100"
               />
@@ -74,7 +75,7 @@ const CourseSlider = ({alumniData} : Props) => {
                 <i className="fas fa-user"></i> {item.name}
               </li>
               <li>
-                <i className="fas fa-briefcase"></i> {item.profession}
+                <i className="fas fa-briefcase"></i> {item.designation}
               </li>
               <li>
                 <i className="fas fa-calendar"></i> {item.batch}
@@ -85,10 +86,10 @@ const CourseSlider = ({alumniData} : Props) => {
               <p className="batch">
                 {expandedMessages[index]
                   ? item.message 
-                  : item.message.length > 50
+                  : item.message?.length > 50
                   ? `${item.message.slice(0, 50)}...`
                   : item.message}{" "}
-                {item.message.length > 50 && (
+                {item.message?.length > 50 && (
                   <button className="bg-transparent text-primary" onClick={() => handleToggleMessage(index)}>
                     {expandedMessages[index] ? "Show less" : "Show more"}
                   </button>

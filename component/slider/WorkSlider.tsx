@@ -1,15 +1,19 @@
 'use client'
-import { WorkType } from "@/types";
+import { StudentType } from "@/types";
 import React from "react";
 import Slider from "react-slick";
 interface Props {
-  workData: WorkType[]
+  studentData: StudentType[]
 }
-const WorkSlider = ({workData} : Props) => {
+const WorkSlider = ({studentData} : Props) => {
+
+  const colors = ['red', 'blue', 'green', 'orange'];
+  const slidesToShow = Math.min(studentData.length, 4);
   return (
+    
     <Slider
       className="row work_slider"
-      slidesToShow={4} // Set the number of slides to show
+      slidesToShow={slidesToShow} // Set the number of slides to show
       infinite={true}
       dots={true}
       autoplay={true}
@@ -48,16 +52,16 @@ const WorkSlider = ({workData} : Props) => {
         },
       ]}
     >
-      {workData.map((item) => (
+      {studentData.map((item, index) => (
         <div className="col-xl-4 wow fadeInUp" key={item._id}>
-          <div className={`tf__work_single ${item.color}`}>
+          <div className={`tf__work_single ${colors[index % colors.length]}`} >
             <div className="tf__work_single_img">
-              <img src={item.imgSrc.image} alt={item.imgSrc.alt} className="img-fluid w-100" />
+              <img src={item.studentImage} alt="img" className="img-fluid w-100" />
             </div>
             <div className="tf__work_single_text">
-              <h3>{item.task}</h3>
-              <p>{item.class}</p>
-              <p>{item.desc}</p>
+              <h3>{item.studentName}</h3>
+              <p>{item.studentClass}</p>
+              <p>{item.studentAward}</p>
             </div>
           </div>
         </div>

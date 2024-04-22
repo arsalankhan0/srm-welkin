@@ -1,4 +1,5 @@
 "use client"
+import { AlumniType } from "@/types";
 import Layout from "@/component/admin/Layout/Layout";
 import ConfirmModal from "@/component/confirmationmodals/ConfirmModal";
 import { useEffect, useState } from 'react';
@@ -7,51 +8,50 @@ import { toast } from 'react-toastify';
 import Link from 'next/link';
 import { RiEdit2Line, RiDeleteBinLine, RiEyeLine } from 'react-icons/ri';
 import apiConfig from '@/api.config.json';
-const API_HOST = apiConfig.API_HOST;
 
 const ManageAlumni = () => {
-    // const [alumni, setAlumni] = useState([]);
+    const API_HOST = apiConfig.API_HOST;
+    const [isLoading, setIsLoading] = useState(false);
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const [selectedAlumniId, setSelectedAlumniId] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const perPage = 8;
     
-    const [alumni, setAlumni] = useState([
-        {
-            id: '1',
-            image: '/images/team_1.jpg',
-            name: 'arsalan',
-            batch: '2022'
-        },
-        {
-            id: '2',
-            image: '/images/team_2.jpg',
-            name: 'faiq',
-            batch: '2012'
-        },
-    ]);
+    const [alumni, setAlumni] = useState<AlumniType[]>([]);
 
     useEffect(() => {
         fetchAlumni();
-    }, []);
+    }, [currentPage]);
 
     const fetchAlumni = async () => {
-        try {
-            const response = await axios.get(`${API_HOST}/api/alumni`);
-            setAlumni(response.data);
-        } catch (error) {
+        setIsLoading(true);
+        try 
+        {
+            const response = await axios.get(`${API_HOST}/getAllAlumniForms`);
+            setAlumni(response.data.alumniForms.reverse());
+        } 
+        catch (error) 
+        {
             console.error('Error fetching alumni:', error);
             toast.error('Failed to fetch alumni');
+        }
+        finally 
+        {
+            setIsLoading(false);
         }
     };
 
     const handleDelete = async (id:any) => {
-        try {
-            // Placeholder for API call to delete alumni
-            // await axios.delete(`/api/alumni/${id}`);
-            setAlumni(prevAlumni => prevAlumni.filter(alumnus => alumnus.id !== id));
+        try 
+        {
+            await axios.delete(`${API_HOST}/deleteAlumniFormById/${id}`);
+            setAlumni(prevAlumni => prevAlumni.filter(alumnus => alumnus._id !== id));
             toast.success('Alumni deleted successfully');
-        } catch (error) {
+        } 
+        catch (error) 
+        {
+            toast.error('Failed to delete alumni! Please try again later.');
             console.error('Error deleting alumni:', error);
-            toast.error('Failed to delete alumni');
         }
         setSelectedAlumniId(null);
         setShowConfirmationModal(false);
@@ -65,6 +65,13 @@ const ManageAlumni = () => {
     const closeConfirmationModal = () => {
         setSelectedAlumniId(null);
         setShowConfirmationModal(false);
+    };
+
+    // Get the current page of notifications based on currentPage and perPage
+    const getCurrentPageRecords = () => {
+        const startIndex = (currentPage - 1) * perPage;
+        const endIndex = startIndex + perPage;
+        return alumni.slice(startIndex, endIndex);
     };
 
     return (
@@ -84,21 +91,46 @@ const ManageAlumni = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {alumni.map((alumnus, index) => (
-                                <tr key={alumnus.id}>
-                                    <th scope="row">{index + 1}</th>
-                                    <td><img src={alumnus.image} style={{width: '50px'}} alt="img" /></td>
+                            {isLoading && <tr className='text-center'><td colSpan={4}>Loading alumni...</td></tr>}
+                            {getCurrentPageRecords().map((alumnus, index) => (
+                                <tr key={alumnus._id}>
+                                    <th scope="row">{(currentPage - 1) * perPage + index + 1}</th>
+                                    <td>
+                                        <img src={alumnus.image as string} style={{width: '50px', height: '50px'}} alt="img" />
+                                    </td>
                                     <td>{alumnus.name}</td>
                                     <td>{alumnus.batch}</td>
                                     <td>
-                                    <Link href={`/admin/alumni/viewfull?id=${alumnus.id}`}><RiEyeLine className="me-2 fs-4" style={{ cursor: "pointer", color: "blue" }} title="View Full Details" /></Link>
-                                        <RiDeleteBinLine className="fs-4" style={{ cursor: "pointer", color: "red" }} onClick={() => openConfirmationModal(alumnus.id)} title="Delete"/>
+                                    <Link href={`/admin/alumni/viewfull?id=${alumnus._id}`}><RiEyeLine className="me-2 fs-4" style={{ cursor: "pointer", color: "blue" }} title="View Full Details" /></Link>
+                                        <RiDeleteBinLine className="fs-4" style={{ cursor: "pointer", color: "red" }} onClick={() => openConfirmationModal(alumnus._id)} title="Delete"/>
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
+                {/* Pagination */}
+                <nav aria-label="Page navigation mt-5">
+                    <ul className="pagination justify-content-center">
+                        <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                            <button className="page-link" onClick={() => setCurrentPage(currentPage - 1)} aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span className="visually-hidden">Previous</span>
+                            </button>
+                        </li>
+                        {Array.from({ length: Math.ceil(alumni.length / perPage) }, (_, i) => (
+                            <li key={i + 1} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
+                                <button className="page-link" onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
+                            </li>
+                        ))}
+                        <li className={`page-item ${currentPage === Math.ceil(alumni.length / perPage) ? 'disabled' : ''}`}>
+                            <button className="page-link" onClick={() => setCurrentPage(currentPage + 1)} aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                                <span className="visually-hidden">Next</span>
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
             </div>
             {showConfirmationModal && (
                 <>

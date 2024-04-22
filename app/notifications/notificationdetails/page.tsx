@@ -1,7 +1,7 @@
 import React from 'react'
 import type { Metadata } from 'next'
 import Layout from '@/component/layout/Layout'
-import AllNotifications from '@/component/notification/AllNotification'
+import NotificationDetail from '@/component/notification/NotificationDetail'
 
 export const metadata: Metadata = {
     title: "SRM Welkin Admin Login",
@@ -11,7 +11,7 @@ export default function page() {
     return (
         <div>
             <Layout>
-                <AllNotifications />
+                <NotificationDetail />
             </Layout>
         </div>
     )

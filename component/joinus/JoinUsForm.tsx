@@ -1,8 +1,11 @@
-"use client"
-import React, { useState } from "react";
+"use client";
+import React, { useRef, useState } from "react";
+import axios from "axios";
 import { toast } from "react-toastify";
+import apiConfig from '@/api.config.json';
 
 const JoinUsForm = () => {
+    const API_HOST = apiConfig.API_HOST;
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
@@ -13,32 +16,95 @@ const JoinUsForm = () => {
     const [companyName, setCompanyName] = useState("");
     const [jobTitle, setJobTitle] = useState("");
     const [resume, setResume] = useState<File | null>(null);
+    const [loading, setLoading] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const resumeSize = 5;
 
-    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (!fullName || !email || !phone || !address || !position || !qualification || !workExperience || !companyName || !jobTitle || !resume) 
+        if (!fullName || !email || !phone || !address || !position || !qualification || !resume) 
         {
             toast.error("Please fill out all fields.", { position: "top-right" });
         } 
         else 
         {
-            // If the form is successfully submitted, show a success toast
-            toast.success("Record Submitted successfully!", {
-                position: "top-right",
-            });
+            // Validate work experience, company name, and job title together
+            if (workExperience || companyName || jobTitle) {
+                if (!workExperience) {
+                    toast.error("Please enter work experience.", { position: "top-right" });
+                    return;
+                }
+                if (!companyName) {
+                    toast.error("Please enter company/institute name.", { position: "top-right" });
+                    return;
+                }
+                if (!jobTitle) {
+                    toast.error("Please enter job title.", { position: "top-right" });
+                    return;
+                }
+            }
+            // Validating resume
+            if (resume) 
+            {
+                if (!resume.name.toLowerCase().endsWith(".pdf") && !resume.name.toLowerCase().endsWith(".doc") && !resume.name.toLowerCase().endsWith(".docx")) {
+                    toast.error("Resume must be in PDF or DOC format.", { position: "top-right" });
+                    return;
+                }
 
-            // Clear form fields
-            setFullName("");
-            setEmail("");
-            setPhone("");
-            setAddress("");
-            setPosition("");
-            setQualification("");
-            setWorkExperience("");
-            setCompanyName("");
-            setJobTitle("");
-            setResume(null);
+                if (resume.size > resumeSize * 1024 * 1024) {
+                    toast.error(`Resume size should be less than ${resumeSize} MB.`, { position: "top-right" });
+                    return;
+                }
+            }
+
+            const formData = new FormData();
+            formData.append("fullName", fullName);
+            formData.append("email", email);
+            formData.append("phoneNumber", phone);
+            formData.append("address", address);
+            formData.append("position", position);
+            formData.append("qualification", qualification);
+            formData.append("workExperience", workExperience.toString());
+            formData.append("companyName", companyName);
+            formData.append("jobTitle", jobTitle);
+            formData.append("resume", resume!);
+
+            try 
+            {
+                setLoading(true);
+                await axios.post(`${API_HOST}/submit`, formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                });
+                
+                toast.success("Record Submitted successfully!", {
+                    position: "top-right",
+                });
+            } 
+            catch (error) 
+            {
+                console.error("Error submitting form:", error);
+                toast.error("Failed to submit form! Please try again later.");
+            }
+            finally
+            {
+                setFullName("");
+                setEmail("");
+                setPhone("");
+                setAddress("");
+                setPosition("");
+                setQualification("");
+                setWorkExperience("");
+                setCompanyName("");
+                setJobTitle("");
+                setLoading(false);
+                if (fileInputRef.current) 
+                {
+                    fileInputRef.current.value = "";
+                }
+            }
         }
     };
 
@@ -137,8 +203,9 @@ const JoinUsForm = () => {
                             type="number"
                             placeholder="Work Experience"
                             value={workExperience}
+                            min={0}
+                            max={40}
                             onChange={(e) => setWorkExperience(e.target.value)}
-                            required
                         />
                     </div>
                 </div>
@@ -150,7 +217,6 @@ const JoinUsForm = () => {
                             placeholder="Company/Institute Name"
                             value={companyName}
                             onChange={(e) => setCompanyName(e.target.value)}
-                            required
                         />
                     </div>
                 </div>
@@ -162,7 +228,6 @@ const JoinUsForm = () => {
                             placeholder="Job Title"
                             value={jobTitle}
                             onChange={(e) => setJobTitle(e.target.value)}
-                            required
                         />
                     </div>
                 </div>
@@ -172,6 +237,7 @@ const JoinUsForm = () => {
                         <input
                             type="file"
                             accept=".pdf,.doc"
+                            ref={fileInputRef}
                             onChange={(e) => {
                                 if (e.target.files && e.target.files.length > 0) {
                                     setResume(e.target.files[0]);
@@ -183,7 +249,11 @@ const JoinUsForm = () => {
                 </div>
                 <div className="col-xl-12">
                     <div className="tf__login_imput">
-                        <button type="submit" className="common_btn">Submit</button>
+                        {/* <button type="submit" className="common_btn">Submit</button> */}
+                        <button type="submit" className="common_btn" disabled={loading}>
+                                {loading && <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>}
+                                {loading ? 'Submitting' : 'Submit'}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -192,3 +262,4 @@ const JoinUsForm = () => {
 };
 
 export default JoinUsForm;
+
