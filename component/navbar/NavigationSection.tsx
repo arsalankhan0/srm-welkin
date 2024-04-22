@@ -34,7 +34,7 @@ const NavigationSection = ({ position, btnPosition, navRef }: Props) => {
         <Navlink href="/contact">contact</Navlink>
       </li>
       <li className="nav-item">
-        <Navlink href="/about">about us</Navlink>
+        <Navlink href="/about">about</Navlink>
       </li>
       <li className="nav-item">
         <Navlink href="/sign-in">Admin</Navlink>
