@@ -10,6 +10,7 @@ interface Notification {
     NoticeTitle: string;
     NoticeDescription: string;
     createdAt: string;
+    pdf: string;
     __v: number;
 }
 
@@ -23,9 +24,10 @@ const NoticeBoard = () => {
             setIsLoading(true);
             try 
             {
-                const response = await axios.get(`${API_HOST}/fetchNotifications`);
+                const response = await axios.get(`${API_HOST}/getAllNotifications`);
                 const sortedNotifications:Notification[] = response.data.notifications.sort((a:Notification, b:Notification) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
                 setNotifications(sortedNotifications);
+                console.log(response.data);
             } 
             catch (error) 
             {
@@ -67,7 +69,6 @@ const NoticeBoard = () => {
                             <li key={notification._id} className={styles.notice}>
                                 <div className={styles.noticeContent}>
                                     <h3 className={styles.noticeTitle}>{notification.NoticeTitle}</h3>
-                                    {/* <p className={styles.noticeText}>{notification.NoticeDescription}</p> */}
                                     <p className={styles.noticeDate}>Date: {formatDate(notification.createdAt)}</p>
                                 </div>
                             </li>

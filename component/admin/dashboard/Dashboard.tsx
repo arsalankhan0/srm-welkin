@@ -5,6 +5,7 @@ import axios from 'axios';
 import { FaBullhorn, FaUserTie, FaGraduationCap, FaTrophy, FaUserPlus, FaUserFriends, FaSync } from 'react-icons/fa';
 import apiConfig from '@/api.config.json';
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const Dashboard = () => {
     const API_HOST = apiConfig.API_HOST;
@@ -15,9 +16,20 @@ const Dashboard = () => {
     const [totalJoinUs, setTotalJoinUs] = useState(0);
     const [totalAlumni, setTotalAlumni] = useState(0);
     const [loading, setLoading] = useState(false);
+    const router = useRouter();
 
     useEffect(() => {
-        fetchData();
+        const token = localStorage.getItem('token');
+        const expirationTime = localStorage.getItem('expirationTime');
+
+        if (!token || !expirationTime || new Date().getTime() > parseInt(expirationTime)) 
+        {
+            router.push('/sign-in');
+        } 
+        else 
+        {
+            fetchData();
+        }
     }, []);
 
     const fetchData = async () => {
@@ -25,7 +37,7 @@ const Dashboard = () => {
         {
             setLoading(true);
             const [noticesResponse, staffResponse, studentsResponse, achievementsResponse, joinUsResponse, alumniResponse] = await Promise.all([
-                axios.get(`${API_HOST}/fetchNotifications`),
+                axios.get(`${API_HOST}/getAllNotifications`),
                 axios.get(`${API_HOST}/getAllStaffMembers`),
                 axios.get(`${API_HOST}/getAllStudents`),
                 axios.get(`${API_HOST}/getAllAchievements`),

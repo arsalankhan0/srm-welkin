@@ -7,6 +7,7 @@ import apiConfig from '@/api.config.json';
 import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { JoinType } from '@/types';
+import { useRouter } from 'next/navigation';
 
 const ViewFullDetails = () => {
     const API_HOST = apiConfig.API_HOST;
@@ -14,29 +15,64 @@ const ViewFullDetails = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false); 
     const searchParams = useSearchParams();
     const id: string | null = searchParams.get('id');
+    const router = useRouter();
 
     useEffect(() => {
-        const fetchDetails = async () => {
-            if (id && !Array.isArray(id)) {
-                setIsLoading(true);
-                try 
-                {
-                    const response = await axios.get(`${API_HOST}/getformbyId/${id}`);
-                    setJoinRequestDetails(response.data);
-                } 
-                catch (error) 
-                {
-                    console.error('Error fetching Request Details:', error);
-                } 
-                finally 
-                {
-                    setIsLoading(false);
-                }
-            }
-        };
+        const token = localStorage.getItem('token');
+        const expirationTime = localStorage.getItem('expirationTime');
 
-        fetchDetails();
+        if (!token || !expirationTime || new Date().getTime() > parseInt(expirationTime)) 
+        {
+            router.push('/sign-in');
+        } 
+        else 
+        {
+            const fetchDetails = async () => {
+                if (id && !Array.isArray(id)) {
+                    setIsLoading(true);
+                    try 
+                    {
+                        const response = await axios.get(`${API_HOST}/getformbyId/${id}`);
+                        setJoinRequestDetails(response.data);
+                    } 
+                    catch (error) 
+                    {
+                        console.error('Error fetching Request Details:', error);
+                    } 
+                    finally 
+                    {
+                        setIsLoading(false);
+                    }
+                }
+            };
+    
+            fetchDetails();
+        }
     }, [id]);
+
+
+    // useEffect(() => {
+    //     const fetchDetails = async () => {
+    //         if (id && !Array.isArray(id)) {
+    //             setIsLoading(true);
+    //             try 
+    //             {
+    //                 const response = await axios.get(`${API_HOST}/getformbyId/${id}`);
+    //                 setJoinRequestDetails(response.data);
+    //             } 
+    //             catch (error) 
+    //             {
+    //                 console.error('Error fetching Request Details:', error);
+    //             } 
+    //             finally 
+    //             {
+    //                 setIsLoading(false);
+    //             }
+    //         }
+    //     };
+
+    //     fetchDetails();
+    // }, [id]);
 
 
     return (

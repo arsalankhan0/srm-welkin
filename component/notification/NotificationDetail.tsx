@@ -17,7 +17,7 @@ const NotificationDetail = () => {
                 setIsLoading(true);
                 try 
                 {
-                    const response = await axios.get(`${API_HOST}/getNotificationById/${id}`);
+                    const response = await axios.get(`${API_HOST}/get-notification/${id}`);
                     setNotification(response.data.notification);
                 } 
                 catch (error) 
@@ -58,9 +58,9 @@ const NotificationDetail = () => {
                     <div className="card-body">
                         <h3 className="card-title">{notification.NoticeTitle}</h3>
                         <p className="card-text mt-3">{notification.NoticeDescription}</p>
-                        {/* {notification.attachment && (
-                            <a href={notification.attachment} target="_blank" className="text-primary mt-3">View Attachment (PDF)</a>
-                        )} */}
+                        {notification.pdf && (
+                            <a href={notification.pdf} target="_blank" className="text-primary mt-3">View Attachment (PDF)</a>
+                        )}
                         <p className="card-text text-muted fst-italic mt-3">Date: {formatDate(notification.createdAt)}</p>
                     </div>
                 </div>

@@ -8,6 +8,7 @@ import { AlumniType } from '@/types';
 import axios from 'axios';
 import apiConfig from '@/api.config.json';
 import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 const ViewFullDetails = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false); 
@@ -15,30 +16,65 @@ const ViewFullDetails = () => {
     const id: string | null = searchParams.get('id');
     const API_HOST = apiConfig.API_HOST;
     const [alumniDetails, setAlumniDetails] = useState<AlumniType | null>(null);
+    const router = useRouter();
 
     useEffect(() => {
-        const fetchAlumniDetails = async () => {
-            if (id && !Array.isArray(id)) {
-                setIsLoading(true);
-                try 
-                {
-                    const response = await axios.get(`${API_HOST}/getAlumniFormById/${id}`);
-                    setAlumniDetails(response.data.alumniForm);
-                } 
-                catch (error) 
-                {
-                    console.error('Error fetching Alumni Details:', error);
-                    toast.error("Error Fetching Alumni Details!");
-                } 
-                finally 
-                {
-                    setIsLoading(false);
-                }
-            }
-        };
+        const token = localStorage.getItem('token');
+        const expirationTime = localStorage.getItem('expirationTime');
 
-        fetchAlumniDetails();
+        if (!token || !expirationTime || new Date().getTime() > parseInt(expirationTime)) 
+        {
+            router.push('/sign-in');
+        } 
+        else 
+        {
+            const fetchAlumniDetails = async () => {
+                if (id && !Array.isArray(id)) {
+                    setIsLoading(true);
+                    try 
+                    {
+                        const response = await axios.get(`${API_HOST}/getAlumniFormById/${id}`);
+                        setAlumniDetails(response.data.alumniForm);
+                    } 
+                    catch (error) 
+                    {
+                        console.error('Error fetching Alumni Details:', error);
+                        toast.error("Error Fetching Alumni Details!");
+                    } 
+                    finally 
+                    {
+                        setIsLoading(false);
+                    }
+                }
+            };
+    
+            fetchAlumniDetails();
+        }
     }, [id]);
+
+    // useEffect(() => {
+    //     const fetchAlumniDetails = async () => {
+    //         if (id && !Array.isArray(id)) {
+    //             setIsLoading(true);
+    //             try 
+    //             {
+    //                 const response = await axios.get(`${API_HOST}/getAlumniFormById/${id}`);
+    //                 setAlumniDetails(response.data.alumniForm);
+    //             } 
+    //             catch (error) 
+    //             {
+    //                 console.error('Error fetching Alumni Details:', error);
+    //                 toast.error("Error Fetching Alumni Details!");
+    //             } 
+    //             finally 
+    //             {
+    //                 setIsLoading(false);
+    //             }
+    //         }
+    //     };
+
+    //     fetchAlumniDetails();
+    // }, [id]);
 
     return (
         <Layout>

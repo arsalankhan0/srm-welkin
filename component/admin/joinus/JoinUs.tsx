@@ -8,6 +8,7 @@ import ConfirmModal from "@/component/confirmationmodals/ConfirmModal";
 import apiConfig from '@/api.config.json';
 import { JoinType } from "@/types";
 import axios from "axios";
+import { useRouter } from 'next/navigation';
 
 const JoinRequests = () => {
 
@@ -18,9 +19,20 @@ const JoinRequests = () => {
     const [selectedJoinReqtId, setSelectedJoinReqId] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const perPage = 8;
+    const router = useRouter();
 
     useEffect(() => {
-        fetchRequests();
+        const token = localStorage.getItem('token');
+        const expirationTime = localStorage.getItem('expirationTime');
+
+        if (!token || !expirationTime || new Date().getTime() > parseInt(expirationTime)) 
+        {
+            router.push('/sign-in');
+        } 
+        else 
+        {
+            fetchRequests();
+        }
     }, [currentPage]);
 
     const fetchRequests = async () => {

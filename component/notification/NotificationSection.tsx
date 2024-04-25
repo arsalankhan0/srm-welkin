@@ -46,7 +46,7 @@ const NoticeBoard: React.FC = () => {
             setIsLoading(true);
             try 
             {
-                const response = await axios.get(`${API_HOST}/fetchNotifications`);
+                const response = await axios.get(`${API_HOST}/getAllNotifications`);
                 const sortedNotifications:Notification[] = response.data.notifications.sort((a:Notification, b:Notification) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
                 const topFiveNotifications = sortedNotifications.slice(0, 5);
                 setNotifications(topFiveNotifications);

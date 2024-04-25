@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import Link from 'next/link';
 import { RiEdit2Line, RiDeleteBinLine, RiEyeLine } from 'react-icons/ri';
 import apiConfig from '@/api.config.json';
+import { useRouter } from 'next/navigation';
 
 const ManageAlumni = () => {
     const API_HOST = apiConfig.API_HOST;
@@ -16,11 +17,22 @@ const ManageAlumni = () => {
     const [selectedAlumniId, setSelectedAlumniId] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const perPage = 8;
+    const router = useRouter();
     
     const [alumni, setAlumni] = useState<AlumniType[]>([]);
 
     useEffect(() => {
-        fetchAlumni();
+        const token = localStorage.getItem('token');
+        const expirationTime = localStorage.getItem('expirationTime');
+
+        if (!token || !expirationTime || new Date().getTime() > parseInt(expirationTime)) 
+        {
+            router.push('/sign-in');
+        } 
+        else 
+        {
+            fetchAlumni();
+        }
     }, [currentPage]);
 
     const fetchAlumni = async () => {

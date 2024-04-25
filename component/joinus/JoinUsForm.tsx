@@ -247,9 +247,8 @@ const JoinUsForm = () => {
                         />
                     </div>
                 </div>
-                <div className="col-xl-12">
+                <div className="d-flex justify-content-start">
                     <div className="tf__login_imput">
-                        {/* <button type="submit" className="common_btn">Submit</button> */}
                         <button type="submit" className="common_btn" disabled={loading}>
                                 {loading && <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>}
                                 {loading ? 'Submitting' : 'Submit'}

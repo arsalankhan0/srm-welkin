@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import Link from 'next/link';
 import { RiEdit2Line, RiDeleteBinLine } from 'react-icons/ri';
 import apiConfig from '@/api.config.json';
+import { useRouter } from 'next/navigation';
 
 
 const ManageAchievements = () => {
@@ -18,9 +19,20 @@ const ManageAchievements = () => {
     const [selectedAchievementId, setSelectedAchievementId] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const perPage = 8;
+    const router = useRouter();
 
     useEffect(() => {
-        fetchAchievements();
+        const token = localStorage.getItem('token');
+        const expirationTime = localStorage.getItem('expirationTime');
+
+        if (!token || !expirationTime || new Date().getTime() > parseInt(expirationTime)) 
+        {
+            router.push('/sign-in');
+        } 
+        else 
+        {
+            fetchAchievements();
+        }
     }, [currentPage]);
 
     // Function to fetch achievements from the API

@@ -22,6 +22,9 @@ const NavigationSection = ({ position, btnPosition, navRef }: Props) => {
           <Navlink href="/">Home</Navlink>
       </li>
       <li className="nav-item">
+        <Navlink href="/about">about</Navlink>
+      </li>
+      <li className="nav-item">
         <Navlink href="/achievements">Achievements</Navlink>
       </li>
       <li className="nav-item">
@@ -32,9 +35,6 @@ const NavigationSection = ({ position, btnPosition, navRef }: Props) => {
       </li>
       <li className="nav-item">
         <Navlink href="/contact">contact</Navlink>
-      </li>
-      <li className="nav-item">
-        <Navlink href="/about">about</Navlink>
       </li>
       <li className="nav-item">
         <Navlink href="/sign-in">Admin</Navlink>

@@ -6,11 +6,13 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { RiDeleteBinLine } from 'react-icons/ri';
 import apiConfig from '@/api.config.json';
+import { useRouter } from 'next/navigation';
 
 interface Notification {
     _id: string;
     NoticeTitle: string;
     NoticeDescription: string;
+    pdf: string;
     createdAt: string;
     __v: number;
 }
@@ -23,16 +25,28 @@ const ManageNotice = () => {
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const perPage = 8;
+    const router = useRouter();
 
     useEffect(() => {
-        fetchNotices();
+        const token = localStorage.getItem('token');
+        const expirationTime = localStorage.getItem('expirationTime');
+
+        if (!token || !expirationTime || new Date().getTime() > parseInt(expirationTime)) 
+        {
+            router.push('/sign-in');
+        } 
+        else 
+        {
+            fetchNotices();
+        }
     }, [currentPage]);
+
 
     const fetchNotices = async () => {
         setIsLoading(true);
         try 
         {
-            const response = await axios.get(`${API_HOST}/fetchNotifications`);
+            const response = await axios.get(`${API_HOST}/getAllNotifications`);
             const sortedNotifications: Notification[] = response.data.notifications.sort((a: Notification, b: Notification) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
             setNotifications(sortedNotifications);
         } 
@@ -51,7 +65,7 @@ const ManageNotice = () => {
         {
             try 
             {
-                await axios.delete(`${API_HOST}/deleteNotifications/${Id}`);
+                await axios.delete(`${API_HOST}/delete-notification/${Id}`);
                 setNotifications(prevNotices => prevNotices.filter(notice => notice._id !== Id));
                 toast.success('Notice deleted successfully');
             } 
@@ -94,6 +108,7 @@ const ManageNotice = () => {
                                 <th scope="col">S.No</th>
                                 <th scope="col">Notice Title</th>
                                 <th scope="col">Notice Description</th>
+                                <th scope="col">Attachment</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -104,6 +119,12 @@ const ManageNotice = () => {
                                     <th scope="row">{(currentPage - 1) * perPage + index + 1}</th>
                                     <td>{notice.NoticeTitle}</td>
                                     <td>{notice.NoticeDescription}</td>
+                                    <td> {notice.pdf ? (
+                                            <a href={notice.pdf} target="_blank">View Attachment</a>
+                                        ) : (
+                                            <span>Attachment Not Available</span>
+                                        )}
+                                    </td>
                                     <td>
                                         <RiDeleteBinLine className="fs-4" style={{ cursor: "pointer", color: "red" }} onClick={() => openConfirmationModal(notice._id)} title="Delete" />
                                     </td>

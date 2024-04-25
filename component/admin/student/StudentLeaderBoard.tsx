@@ -1,10 +1,11 @@
 "use client"
 import Layout from "@/component/admin/Layout/Layout";
-import { useState, FormEvent, useRef } from 'react';
+import { useState, FormEvent, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import Link from 'next/link';
 import apiConfig from '@/api.config.json';
+import { useRouter } from 'next/navigation';
 
 export default function StudentLeaderboard() {
     const API_HOST = apiConfig.API_HOST;
@@ -14,6 +15,16 @@ export default function StudentLeaderboard() {
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const router = useRouter();
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        const expirationTime = localStorage.getItem('expirationTime');
+
+        if (!token || !expirationTime || new Date().getTime() > parseInt(expirationTime)) {
+            router.push('/sign-in');
+        }
+    }, []);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];

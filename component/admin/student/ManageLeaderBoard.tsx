@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import Link from 'next/link';
 import { RiEdit2Line, RiDeleteBinLine } from 'react-icons/ri';
 import apiConfig from '@/api.config.json';
+import { useRouter } from 'next/navigation';
 
 const ManageLeaderboard = () => {
     const API_HOST = apiConfig.API_HOST;
@@ -17,9 +18,20 @@ const ManageLeaderboard = () => {
     const [selectedStudentId, setSelectedStudentId] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const perPage = 8;
+    const router = useRouter();
 
     useEffect(() => {
-        fetchStudents();
+        const token = localStorage.getItem('token');
+        const expirationTime = localStorage.getItem('expirationTime');
+
+        if (!token || !expirationTime || new Date().getTime() > parseInt(expirationTime)) 
+        {
+            router.push('/sign-in');
+        } 
+        else 
+        {
+            fetchStudents();
+        }
     }, [currentPage]);
 
     const fetchStudents = async () => {

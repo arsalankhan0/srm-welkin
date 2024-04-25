@@ -1,18 +1,30 @@
 "use client"
 import Layout from "@/component/admin/Layout/Layout";
-import { useState, FormEvent, useRef } from 'react';
+import { useState, FormEvent, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import Link from 'next/link';
 import apiConfig from '@/api.config.json';
+import { useRouter } from 'next/navigation';
 
 export default function Achievements() {
     const [achievementTitle, setAchievementTitle] = useState('');
-    const [achievementDescription, setAchievementDescription] = useState('');
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const API_HOST = apiConfig.API_HOST;
+    const router = useRouter();
+    const [validToken, setValidToken] = useState(true);
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        const expirationTime = localStorage.getItem('expirationTime');
+
+        if (!token || !expirationTime || new Date().getTime() > parseInt(expirationTime)) {
+            setValidToken(false);
+            router.push('/sign-in');
+        }
+    }, []);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -57,15 +69,15 @@ export default function Achievements() {
         {
             setLoading(false);
             setAchievementTitle('');
-            setAchievementDescription('');
             if (fileInputRef.current) {
                 fileInputRef.current.value = "";
             }
         }
     };
 
+
     return (
-        <Layout>
+        {validToken} && <Layout>
             <div className="container-fluid">
                 <h3 className="mt-2">Add Achievement</h3>
                 <hr />
